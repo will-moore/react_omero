@@ -1,7 +1,7 @@
 
-var ProductRow = React.createClass({
+var ProjectListItem = React.createClass({
     render: function() {
-        var name = this.props.product.name;
+        var name = this.props.project.name;
         return (
             <li>
               {name}
@@ -10,7 +10,7 @@ var ProductRow = React.createClass({
     }
 });
 
-var ProductTable = React.createClass({
+var ProjectList = React.createClass({
 
     componentDidMount: function() {
         $.ajax({
@@ -34,8 +34,8 @@ var ProductTable = React.createClass({
     render: function() {
         var rows = [];
         var lastCategory = null;
-        this.state.data.forEach(function(product) {
-            rows.push(<ProductRow product={product} key={product.id} />);
+        this.state.data.forEach(function(project) {
+            rows.push(<ProjectListItem project={project} key={project.id} />);
         });
         return (
             <ul>{rows}</ul>
@@ -45,6 +45,6 @@ var ProductTable = React.createClass({
 
  
 ReactDOM.render(
-    <ProductTable url="http://localhost:4080/webgateway/api/containers/" />,
+    <ProjectList url="http://localhost:4080/webgateway/api/containers/" />,
     document.getElementById('container')
 );
