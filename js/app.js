@@ -1,10 +1,16 @@
 
 var ProjectListItem = React.createClass({
+    handleClick: function() {
+        console.log("click project", this.props.project.id);
+        this.props.onClick(this.props.project.id);
+    },
+
     render: function() {
-        var name = this.props.project.name;
+        var name = this.props.project.name,
+            id = this.props.project.id;
         return (
             <li>
-              {name}
+              <button onClick={this.handleClick} value="{id}">{name}</button>
             </li>
         );
     }
@@ -12,9 +18,14 @@ var ProjectListItem = React.createClass({
 
 var ProjectList = React.createClass({
 
+    handleProjectClick: function(projectId) {
+        console.log("handleProjectClick", projectId);
+        this.props.handleProjectClick(projectId);
+    },
+
     componentDidMount: function() {
         $.ajax({
-            url: this.props.url,
+            url: "http://localhost:4080/webgateway/api/containers/",
             jsonp: "callback",
             dataType: 'jsonp',
             cache: false,
@@ -33,9 +44,13 @@ var ProjectList = React.createClass({
 
     render: function() {
         var rows = [];
+        var self = this;
         var lastCategory = null;
         this.state.data.forEach(function(project) {
-            rows.push(<ProjectListItem project={project} key={project.id} />);
+            rows.push(<ProjectListItem
+                        onClick={self.handleProjectClick}
+                        project={project}
+                        key={project.id} />);
         });
         return (
             <ul>{rows}</ul>
@@ -43,8 +58,25 @@ var ProjectList = React.createClass({
     }
 });
 
+var PDIContainer = React.createClass({
+
+    handleProjectClick: function(projectId) {
+        console.log("PDIContainer", projectId);
+    },
+
+    render: function() {
+        return (
+            <div><h1>PDI</h1>
+            <ProjectList 
+                handleProjectClick={this.handleProjectClick} />
+            </div>
+        );
+    }
+});
+
+
  
 ReactDOM.render(
-    <ProjectList url="http://localhost:4080/webgateway/api/containers/" />,
+    <PDIContainer />,
     document.getElementById('container')
 );
