@@ -1,24 +1,50 @@
 
 
+var BootstrapDropdownListItem = React.createClass({
+
+    handleClick: function(event) {
+        console.log("li click", this.props.id);
+        event.preventDefault();
+        event.stopPropagation();
+        this.props.handleSelection({'id': this.props.id, 'name': this.props.name});
+        return false;
+    },
+
+    render: function() {
+        return (
+            <li>
+                <a onClick={this.handleClick} href="#">{this.props.children}</a>
+            </li>
+        );
+    } 
+})
+
 var BootstrapDropdown = React.createClass({
 
-        render: function() {
-            return (
-              <div className="dropdown">
-                <button className="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                  Dropdown
-                  <span className="caret" />
-                </button>
-                <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li role="separator" className="divider" />
-                  <li><a href="#">Separated link</a></li>
-                </ul>
-              </div>
-            );
-        }
+    render: function() {
+        var self = this;
+        var items = [];
+        this.props.options.forEach(function(option) {
+            items.push(<BootstrapDropdownListItem
+                                key={option.id}
+                                handleSelection={self.props.onChoose}
+                                name={option.name}
+                                id={option.id}>
+                            {option.name}
+                        </BootstrapDropdownListItem>);
+        });
+        return (
+          <div className="dropdown open">
+            <button className="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              Project:
+              <span className="caret" />
+            </button>
+            <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
+              {items}
+            </ul>
+          </div>
+        );
+    }
 });
 
 
@@ -45,11 +71,6 @@ var ProjectListItem = React.createClass({
 
 var ProjectList = React.createClass({
 
-    // handleProjectClick: function(projectId) {
-    //     console.log("handleProjectClick", projectId);
-    //     this.props.handleProjectClick(projectId);
-    // },
-
     componentDidMount: function() {
         $.ajax({
             url: "http://localhost:4080/webgateway/api/containers/",
@@ -72,7 +93,6 @@ var ProjectList = React.createClass({
     render: function() {
         var rows = [];
         var self = this;
-        var lastCategory = null;
         this.state.data.forEach(function(project) {
             rows.push(<ProjectListItem
                         onClick={self.props.handleProjectClick}
@@ -81,8 +101,7 @@ var ProjectList = React.createClass({
         });
         return (
             <div>
-            <BootstrapDropdown />
-            <ul style={{float:'left'}}>{rows}</ul>
+            <BootstrapDropdown options={this.state.data} onChoose={this.props.handleProjectClick} />
             </div>
         );
     }
@@ -90,30 +109,6 @@ var ProjectList = React.createClass({
 
 
 var DatasetList = React.createClass({
-
-    // handleProjectClick: function(projectId) {
-    //     console.log("handleProjectClick", projectId);
-    //     this.props.handleProjectClick(projectId);
-    // },
-
-    // componentDidMount: function() {
-    //     $.ajax({
-    //         url: "http://localhost:4080/webgateway/api/containers/",
-    //         jsonp: "callback",
-    //         dataType: 'jsonp',
-    //         cache: false,
-    //         success: function(data) {
-    //             this.setState({data: data.projects});
-    //         }.bind(this),
-    //         error: function(xhr, status, err) {
-    //             // console.error(this.props.url, status, err.toString());
-    //         }.bind(this)
-    //     });
-    // },
-
-    // getInitialState: function() {
-    //     return {datasets: []};
-    // },
 
     render: function() {
         console.log("DatasetList render()", this.props.datasets.length);
@@ -155,9 +150,9 @@ var DatasetListItem = React.createClass({
 
 var PDIContainer = React.createClass({
 
-    handleProjectClick: function(projectId) {
-        console.log("PDIContainer", projectId);
-        var data = {'id': projectId};
+    handleProjectClick: function(project) {
+        console.log("PDIContainer", project);
+        var data = {'id': project.id};
         $.ajax({
             url: "http://localhost:4080/webgateway/api/datasets/",
             jsonp: "callback",
