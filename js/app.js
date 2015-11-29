@@ -1,4 +1,28 @@
 
+
+var BootstrapDropdown = React.createClass({
+
+        render: function() {
+            return (
+              <div className="dropdown">
+                <button className="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  Dropdown
+                  <span className="caret" />
+                </button>
+                <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
+                  <li><a href="#">Action</a></li>
+                  <li><a href="#">Another action</a></li>
+                  <li><a href="#">Something else here</a></li>
+                  <li role="separator" className="divider" />
+                  <li><a href="#">Separated link</a></li>
+                </ul>
+              </div>
+            );
+        }
+});
+
+
+
 var ProjectListItem = React.createClass({
     handleClick: function() {
         console.log("click project", this.props.project.id);
@@ -56,7 +80,10 @@ var ProjectList = React.createClass({
                         key={project.id} />);
         });
         return (
+            <div>
+            <BootstrapDropdown />
             <ul style={{float:'left'}}>{rows}</ul>
+            </div>
         );
     }
 });
@@ -153,7 +180,7 @@ var PDIContainer = React.createClass({
 
     render: function() {
         return (
-            <div><h1>PDI</h1>
+            <div>
             <ProjectList 
                 handleProjectClick={this.handleProjectClick} />
             <DatasetList datasets={this.state.datasets} />
