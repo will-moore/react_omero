@@ -30,7 +30,7 @@ var BootstrapDropdown = React.createClass({
                                 handleSelection={self.props.onChoose}
                                 name={option.name}
                                 id={option.id}>
-                            {option.name}
+                            {option.name} [{option.childCount}]
                         </BootstrapDropdownListItem>);
         });
         return (
@@ -70,9 +70,16 @@ var ProjectList = React.createClass({
     },
 
     render: function() {
+        var txt = "Project";
+        if (this.props.project) {
+            txt += ": " + this.props.project.name;
+        } else {
+            txt += "s:";
+        }
+        console.log(this.props.project, 'txt', txt);
         return (
             <BootstrapDropdown options={this.state.data} onChoose={this.props.handleProjectClick}>
-                Projects:
+                {txt}
             </BootstrapDropdown>
         );
     }
@@ -98,6 +105,8 @@ var PDIContainer = React.createClass({
 
     handleProjectClick: function(project) {
         console.log("PDIContainer", project);
+        this.setState({project: {id: project.id, name: project.name}});
+
         var data = {'id': project.id};
         $.ajax({
             url: "http://localhost:4080/webgateway/api/datasets/",
@@ -122,7 +131,7 @@ var PDIContainer = React.createClass({
     render: function() {
         return (
             <ul className="nav navbar-nav">
-                <ProjectList handleProjectClick={this.handleProjectClick} />
+                <ProjectList handleProjectClick={this.handleProjectClick} project={this.state.project} />
                 <DatasetList datasets={this.state.datasets} />
             </ul>
         );
