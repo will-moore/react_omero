@@ -34,40 +34,19 @@ var BootstrapDropdown = React.createClass({
                         </BootstrapDropdownListItem>);
         });
         return (
-          <div className="dropdown open">
+          <li className="dropdown open">
             <button className="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              Project:
+              {this.props.children}
               <span className="caret" />
             </button>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
               {items}
             </ul>
-          </div>
+          </li>
         );
     }
 });
 
-
-
-var ProjectListItem = React.createClass({
-    handleClick: function() {
-        console.log("click project", this.props.project.id);
-        this.props.onClick(this.props.project.id);
-    },
-
-    render: function() {
-        var name = this.props.project.name,
-            childCount = this.props.project.childCount,
-            id = this.props.project.id;
-        return (
-            <li>
-              <button onClick={this.handleClick} value="{id}">
-                {name} [{childCount}]
-              </button>
-            </li>
-        );
-    }
-});
 
 var ProjectList = React.createClass({
 
@@ -91,18 +70,10 @@ var ProjectList = React.createClass({
     },
 
     render: function() {
-        var rows = [];
-        var self = this;
-        this.state.data.forEach(function(project) {
-            rows.push(<ProjectListItem
-                        onClick={self.props.handleProjectClick}
-                        project={project}
-                        key={project.id} />);
-        });
         return (
-            <div>
-            <BootstrapDropdown options={this.state.data} onChoose={this.props.handleProjectClick} />
-            </div>
+            <BootstrapDropdown options={this.state.data} onChoose={this.props.handleProjectClick}>
+                Projects:
+            </BootstrapDropdown>
         );
     }
 });
@@ -111,41 +82,16 @@ var ProjectList = React.createClass({
 var DatasetList = React.createClass({
 
     render: function() {
-        console.log("DatasetList render()", this.props.datasets.length);
-        var rows = [];
-        var self = this;
-        this.props.datasets.forEach(function(dataset) {
-            rows.push(<DatasetListItem
-                        onClick={self.props.handleProjectClick}
-                        dataset={dataset}
-                        key={dataset.id} />);
-        });
+        if (this.props.datasets.length === 0) {
+            return (<span></span>);
+        }
         return (
-            <ul style={{float:'left'}} >{rows}</ul>
+            <BootstrapDropdown options={this.props.datasets} onChoose={this.props.handleProjectClick}>
+                Datasets:
+            </BootstrapDropdown>
         );
     }
 });
-
-var DatasetListItem = React.createClass({
-    handleClick: function() {
-        console.log("click dataset", this.props.dataset.id);
-        this.props.onClick(this.props.dataset.id);
-    },
-
-    render: function() {
-        var name = this.props.dataset.name,
-            childCount = this.props.dataset.childCount,
-            id = this.props.dataset.id;
-        return (
-            <li>
-                <button onClick={this.handleClick} value="{id}">
-                    {name} [{childCount}]
-                </button>
-            </li>
-        );
-    }
-});
-
 
 
 var PDIContainer = React.createClass({
@@ -175,11 +121,10 @@ var PDIContainer = React.createClass({
 
     render: function() {
         return (
-            <div>
-            <ProjectList 
-                handleProjectClick={this.handleProjectClick} />
-            <DatasetList datasets={this.state.datasets} />
-            </div>
+            <ul className="nav navbar-nav">
+                <ProjectList handleProjectClick={this.handleProjectClick} />
+                <DatasetList datasets={this.state.datasets} />
+            </ul>
         );
     }
 });
