@@ -3,7 +3,6 @@
 var BootstrapDropdownListItem = React.createClass({
 
     handleClick: function(event) {
-        console.log("li click", this.props.id);
         event.preventDefault();
         event.stopPropagation();
         this.props.handleSelection({'id': this.props.id, 'name': this.props.name});
@@ -33,8 +32,9 @@ var BootstrapDropdown = React.createClass({
                             {option.name} [{option.childCount}]
                         </BootstrapDropdownListItem>);
         });
+        var open = "open";
         return (
-          <li className="dropdown open">
+          <li className={"dropdown " + open}>
             <button className="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               {this.props.children}
               <span className="caret" />
@@ -76,7 +76,6 @@ var ProjectList = React.createClass({
         } else {
             txt += "s:";
         }
-        console.log(this.props.project, 'txt', txt);
         return (
             <BootstrapDropdown options={this.state.data} onChoose={this.props.handleProjectClick}>
                 {txt}
@@ -92,9 +91,15 @@ var DatasetList = React.createClass({
         if (this.props.datasets.length === 0) {
             return (<span></span>);
         }
+        var txt = "Dataset";
+        if (this.props.dataset) {
+            txt += ": " + this.props.dataset.name;
+        } else {
+            txt += "s:";
+        }
         return (
-            <BootstrapDropdown options={this.props.datasets} onChoose={this.props.handleProjectClick}>
-                Datasets:
+            <BootstrapDropdown options={this.props.datasets} onChoose={this.props.handleDatasetClick}>
+                {txt}
             </BootstrapDropdown>
         );
     }
@@ -104,8 +109,11 @@ var DatasetList = React.createClass({
 var PDIContainer = React.createClass({
 
     handleProjectClick: function(project) {
-        console.log("PDIContainer", project);
-        this.setState({project: {id: project.id, name: project.name}});
+        this.setState({
+            project: {id: project.id, name: project.name},
+            datasets: [],
+            dataset: undefined
+        });
 
         var data = {'id': project.id};
         $.ajax({
@@ -115,13 +123,16 @@ var PDIContainer = React.createClass({
             dataType: 'jsonp',
             cache: false,
             success: function(data) {
-                console.log(data);
                 this.setState({datasets: data.datasets});
             }.bind(this),
             error: function(xhr, status, err) {
                 // console.error(this.props.url, status, err.toString());
             }.bind(this)
         });
+    },
+
+    handleDatasetClick: function(dataset) {
+        this.setState({dataset: {id: dataset.id, name: dataset.name}});
     },
 
     getInitialState: function() {
@@ -132,7 +143,9 @@ var PDIContainer = React.createClass({
         return (
             <ul className="nav navbar-nav">
                 <ProjectList handleProjectClick={this.handleProjectClick} project={this.state.project} />
-                <DatasetList datasets={this.state.datasets} />
+                <DatasetList handleDatasetClick={this.handleDatasetClick}
+                             datasets={this.state.datasets}
+                             dataset={this.state.dataset} />
             </ul>
         );
     }

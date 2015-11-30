@@ -1,3 +1,7 @@
 .example {
   margin: 20px;
 }
+
+li.dropdown {
+	padding-right: 12px;
+}
