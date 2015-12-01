@@ -150,19 +150,45 @@ var PDIContainer = React.createClass({
 
     render: function() {
         return (
-            <ul className="nav navbar-nav">
-                <ProjectList handleProjectClick={this.handleProjectClick} project={this.state.project} />
-                <DatasetList handleDatasetClick={this.handleDatasetClick}
-                             datasets={this.state.datasets}
-                             dataset={this.state.dataset} />
-            </ul>
+            <div className="container-fluid">
+                <ul className="nav navbar-nav">
+                    <ProjectList handleProjectClick={this.handleProjectClick} project={this.state.project} />
+                    <DatasetList handleDatasetClick={this.handleDatasetClick}
+                                 datasets={this.state.datasets}
+                                 dataset={this.state.dataset} />
+                </ul>
+            </div>
         );
     }
 });
 
 
+var SelectedDatasets = React.createClass({
+
+    render: function() {
+        return (
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-xs-3">
+                        <div className="panel panel-default">
+                            <div className="panel-heading">
+                                <h3 className="panel-title">Dataset name</h3>
+                            </div>
+                            <div className="panel-body">
+                                Thumbnails
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+})
+
  
 ReactDOM.render(
-    <PDIContainer />,
-    document.getElementById('container')
+    <div>
+        <PDIContainer />
+        <SelectedDatasets />
+    </div>, document.getElementById('react')
 );
