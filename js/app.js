@@ -22,15 +22,16 @@ var BootstrapDropdown = React.createClass({
 
     render: function() {
         var self = this;
-        var items = [];
-        this.props.options.forEach(function(option) {
-            items.push(<BootstrapDropdownListItem
-                                key={option.id}
-                                handleSelection={self.props.onChoose}
-                                name={option.name}
-                                id={option.id}>
-                            {option.name} [{option.childCount}]
-                        </BootstrapDropdownListItem>);
+        var items = this.props.options.map(function(option) {
+            return (
+                <BootstrapDropdownListItem
+                        key={option.id}
+                        handleSelection={self.props.onChoose}
+                        name={option.name}
+                        id={option.id}>
+                    {option.name} [{option.childCount}]
+                </BootstrapDropdownListItem>
+            );
         });
         var open = "open";
         return (
@@ -57,7 +58,9 @@ var ProjectList = React.createClass({
             dataType: 'jsonp',
             cache: false,
             success: function(data) {
-                this.setState({data: data.projects});
+                if (this.isMounted()) {
+                    this.setState({data: data.projects});
+                }
             }.bind(this),
             error: function(xhr, status, err) {
                 // console.error(this.props.url, status, err.toString());
@@ -123,7 +126,9 @@ var PDIContainer = React.createClass({
             dataType: 'jsonp',
             cache: false,
             success: function(data) {
-                this.setState({datasets: data.datasets});
+                if (this.isMounted()) {
+                    this.setState({datasets: data.datasets});
+                }
             }.bind(this),
             error: function(xhr, status, err) {
                 // console.error(this.props.url, status, err.toString());
@@ -136,7 +141,11 @@ var PDIContainer = React.createClass({
     },
 
     getInitialState: function() {
-        return {datasets: []};
+        return {
+                project: undefined,
+                datasets: [],
+                dataset: undefined
+            };
     },
 
     render: function() {
