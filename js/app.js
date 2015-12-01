@@ -63,7 +63,6 @@ var ProjectList = React.createClass({
                 }
             }.bind(this),
             error: function(xhr, status, err) {
-                // console.error(this.props.url, status, err.toString());
             }.bind(this)
         });
     },
@@ -109,7 +108,7 @@ var DatasetList = React.createClass({
 });
 
 
-var PDIContainer = React.createClass({
+var PDSelector = React.createClass({
 
     handleProjectClick: function(project) {
         this.setState({
@@ -131,20 +130,18 @@ var PDIContainer = React.createClass({
                 }
             }.bind(this),
             error: function(xhr, status, err) {
-                // console.error(this.props.url, status, err.toString());
             }.bind(this)
         });
     },
 
     handleDatasetClick: function(dataset) {
-        this.setState({dataset: {id: dataset.id, name: dataset.name}});
+        this.props.addDataset({id: dataset.id, name: dataset.name});
     },
 
     getInitialState: function() {
         return {
                 project: undefined,
                 datasets: [],
-                dataset: undefined
             };
     },
 
@@ -166,29 +163,57 @@ var PDIContainer = React.createClass({
 var SelectedDatasets = React.createClass({
 
     render: function() {
+
+        var datasets = this.props.datasets.map(function(dataset) {
+            return (
+                <div className="col-xs-3" key={dataset.id}>
+                    <div className="panel panel-default">
+                        <div className="panel-heading">
+                            <h3 className="panel-title">{dataset.name}</h3>
+                        </div>
+                        <div className="panel-body">
+                            Thumbnails
+                        </div>
+                    </div>
+                </div>
+            );
+        });
         return (
             <div className="container-fluid">
                 <div className="row">
-                    <div className="col-xs-3">
-                        <div className="panel panel-default">
-                            <div className="panel-heading">
-                                <h3 className="panel-title">Dataset name</h3>
-                            </div>
-                            <div className="panel-body">
-                                Thumbnails
-                            </div>
-                        </div>
-                    </div>
+                    {datasets}
                 </div>
             </div>
         )
     }
-})
+});
+
+
+var PDSelectionManager = React.createClass({
+
+    getInitialState: function() {
+        return {
+            datasets: [],
+        };
+    },
+
+    addDataset: function(dataset) {
+        var datasets = this.state.datasets;
+        datasets.push(dataset);
+        this.setState(datasets);
+    },
+
+    render: function() {
+        return (
+            <div>
+                <PDSelector addDataset={this.addDataset} />
+                <SelectedDatasets datasets={this.state.datasets} />
+            </div>
+        )
+    }
+});
 
  
 ReactDOM.render(
-    <div>
-        <PDIContainer />
-        <SelectedDatasets />
-    </div>, document.getElementById('react')
+    <PDSelectionManager />, document.getElementById('react')
 );
