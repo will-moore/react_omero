@@ -164,9 +164,10 @@ var SelectedDatasets = React.createClass({
 
     render: function() {
 
+        var colWidth = Math.max(12 / this.props.datasets.length, 3);
         var datasets = this.props.datasets.map(function(dataset) {
             return (
-                <div className="col-xs-3" key={dataset.id}>
+                <div className={"col-xs-" + colWidth} key={dataset.id}>
                     <div className="panel panel-default">
                         <div className="panel-heading">
                             <h3 className="panel-title">{dataset.name}</h3>
