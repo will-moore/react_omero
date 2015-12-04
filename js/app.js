@@ -160,6 +160,53 @@ var PDSelector = React.createClass({
 });
 
 
+var DatasetThumbnails = React.createClass({
+
+    componentDidMount: function() {
+        var data = {'id': this.props.dataset.id};
+        $.ajax({
+            url: "http://localhost:4080/webgateway/api/images/",
+            jsonp: "callback",
+            data: data,
+            dataType: 'jsonp',
+            cache: false,
+            success: function(data) {
+                if (this.isMounted()) {
+                    this.setState({images: data.images});
+                }
+            }.bind(this),
+            error: function(xhr, status, err) {
+            }.bind(this)
+        });
+    },
+
+    getInitialState: function() {
+        return {
+            images: [],
+        };
+    },
+
+    render: function() {
+
+        var thumbs = this.state.images.map(function(img){
+            return (
+                <img src={"http://localhost:4080/webgateway/render_thumbnail/" + img.id} />
+            )
+        });
+        return (
+            <div className="panel panel-default">
+                <div className="panel-heading">
+                    <h3 className="panel-title">{this.props.dataset.name}</h3>
+                </div>
+                <div className="panel-body">
+                    {thumbs}
+                </div>
+            </div>
+        )
+    }
+});
+
+
 var SelectedDatasets = React.createClass({
 
     render: function() {
@@ -168,14 +215,7 @@ var SelectedDatasets = React.createClass({
         var datasets = this.props.datasets.map(function(dataset) {
             return (
                 <div className={"col-xs-" + colWidth} key={dataset.id}>
-                    <div className="panel panel-default">
-                        <div className="panel-heading">
-                            <h3 className="panel-title">{dataset.name}</h3>
-                        </div>
-                        <div className="panel-body">
-                            Thumbnails
-                        </div>
-                    </div>
+                    <DatasetThumbnails dataset={dataset} />
                 </div>
             );
         });
@@ -199,9 +239,15 @@ var PDSelectionManager = React.createClass({
     },
 
     addDataset: function(dataset) {
+        // Only add dataset if we don't have it already selected
         var datasets = this.state.datasets;
-        datasets.push(dataset);
-        this.setState(datasets);
+        var selIds = datasets.map(function(d){
+            return d.id;
+        });
+        if (selIds.indexOf(dataset.id) === -1) {
+            datasets.push(dataset);
+            this.setState(datasets);
+        }
     },
 
     render: function() {
