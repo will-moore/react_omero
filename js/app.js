@@ -190,7 +190,8 @@ var DatasetThumbnails = React.createClass({
 
         var thumbs = this.state.images.map(function(img){
             return (
-                <img src={"http://localhost:4080/webgateway/render_thumbnail/" + img.id} />
+                <img src={"http://localhost:4080/webgateway/render_thumbnail/" + img.id}
+                    className="img-thumbnail" />
             )
         });
         return (

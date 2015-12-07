@@ -9,3 +9,7 @@ li.dropdown {
 .container-fluid {
 	margin-top: 15px;
 }
+
+.img-thumbnail {
+	margin-right: 10px;
+}
