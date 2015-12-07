@@ -52,8 +52,9 @@ var BootstrapDropdown = React.createClass({
 var ProjectList = React.createClass({
 
     componentDidMount: function() {
+        var url = REACTOMERO.WEBGATEWAY_INDEX + "api/containers/";
         $.ajax({
-            url: "http://localhost:4080/webgateway/api/containers/",
+            url: url,
             jsonp: "callback",
             dataType: 'jsonp',
             cache: false,
@@ -118,8 +119,9 @@ var PDSelector = React.createClass({
         });
 
         var data = {'id': project.id};
+        var url = REACTOMERO.WEBGATEWAY_INDEX + "api/datasets/";
         $.ajax({
-            url: "http://localhost:4080/webgateway/api/datasets/",
+            url: url,
             jsonp: "callback",
             data: data,
             dataType: 'jsonp',
@@ -164,8 +166,9 @@ var DatasetThumbnails = React.createClass({
 
     componentDidMount: function() {
         var data = {'id': this.props.dataset.id};
+        var url = REACTOMERO.WEBGATEWAY_INDEX + "api/images/";
         $.ajax({
-            url: "http://localhost:4080/webgateway/api/images/",
+            url: url,
             jsonp: "callback",
             data: data,
             dataType: 'jsonp',
@@ -188,10 +191,11 @@ var DatasetThumbnails = React.createClass({
 
     render: function() {
 
+        var webgateway = REACTOMERO.WEBGATEWAY_INDEX;
         var thumbs = this.state.images.map(function(img){
             return (
-                <img src={"http://localhost:4080/webgateway/render_thumbnail/" + img.id}
-                    className="img-thumbnail" />
+                <img src={webgateway + "render_thumbnail/" + img.id}
+                    key={img.id} className="img-thumbnail" />
             )
         });
         return (
