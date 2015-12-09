@@ -214,6 +214,10 @@ var DatasetThumbnails = React.createClass({
 
 var SelectedDatasets = React.createClass({
 
+    chooseDatasetFilter: function() {
+
+    },
+
     render: function() {
 
         var colWidth = Math.max(12 / this.props.datasets.length, 3);
@@ -226,6 +230,11 @@ var SelectedDatasets = React.createClass({
         });
         return (
             <div className="container-fluid">
+                <ul className="nav navbar-nav filterTools">
+                    <BootstrapDropdown options={[]} onChoose={this.chooseDatasetFilter}>
+                        Filter
+                    </BootstrapDropdown>
+                </ul>
                 <div className="row">
                     {datasets}
                 </div>

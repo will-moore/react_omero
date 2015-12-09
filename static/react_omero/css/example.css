@@ -13,3 +13,9 @@ li.dropdown {
 .img-thumbnail {
 	margin-right: 10px;
 }
+
+.filterTools {
+	position: absolute;
+    top: 70px;
+    right: 3px;
+}
